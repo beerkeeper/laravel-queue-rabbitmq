@@ -233,7 +233,10 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->configQueue['passive'],
                 $this->configQueue['durable'],
                 $this->configQueue['exclusive'],
-                $this->configQueue['auto_delete']
+                $this->configQueue['auto_delete'],
+                $internal = false,
+                $nowait = false,
+                $this->configExchange['arguments']
             );
 
             // bind queue to the exchange
