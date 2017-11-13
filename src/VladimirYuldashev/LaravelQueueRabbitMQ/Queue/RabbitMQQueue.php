@@ -85,9 +85,9 @@ class RabbitMQQueue extends Queue implements QueueContract
      *
      * @return bool
      */
-    public function push($job, $data = '', $queue = null)
+    public function push($job, $data = '', $queue = null, $options = [])
     {
-        return $this->pushRaw($this->createPayload($job, $data), $queue, []);
+        return $this->pushRaw($this->createPayload($job, $data), $queue, $options);
     }
 
     /**
@@ -116,6 +116,10 @@ class RabbitMQQueue extends Queue implements QueueContract
 
             if ($this->retryAfter !== null) {
                 $headers['application_headers'] = [self::ATTEMPT_COUNT_HEADERS_KEY => ['I', $this->retryAfter]];
+            }
+
+            if (isset($options['properties']) && is_array($options['properties'])) {
+                $headers = array_merge($headers, $options['properties']);
             }
 
             // push job to a queue
