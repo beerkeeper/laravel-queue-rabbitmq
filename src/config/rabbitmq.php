@@ -38,9 +38,6 @@ return [
         'durable' => env('RABBITMQ_EXCHANGE_DURABLE', true),
         // the exchange will survive server restarts
         'auto_delete' => env('RABBITMQ_EXCHANGE_AUTODELETE', false),
-        'arguments' => [
-            'x-max-priority' => ['I', env('RABBITMQ_EXCHANGE_MAX_PRIORITY', 5)],
-        ],
     ],
 
     // the number of seconds to sleep if there's an error communicating with rabbitmq

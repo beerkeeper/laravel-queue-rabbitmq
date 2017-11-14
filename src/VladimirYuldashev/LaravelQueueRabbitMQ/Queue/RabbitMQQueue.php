@@ -220,7 +220,11 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->configExchange['type'],
                 $this->configExchange['passive'],
                 $this->configExchange['durable'],
-                $this->configExchange['auto_delete']
+                $this->configExchange['auto_delete'],
+                false,
+                new AMQPTable([
+                    'x-max-priority' => 10,
+                ])
             );
 
             $this->declaredExchanges[] = $exchange;
@@ -234,9 +238,10 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->configQueue['durable'],
                 $this->configQueue['exclusive'],
                 $this->configQueue['auto_delete'],
-                $internal = false,
-                $nowait = false,
-                $this->configExchange['arguments']
+                false,
+                new AMQPTable([
+                    'x-max-priority' => 10,
+                ])
             );
 
             // bind queue to the exchange
@@ -269,7 +274,11 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->configExchange['type'],
                 $this->configExchange['passive'],
                 $this->configExchange['durable'],
-                $this->configExchange['auto_delete']
+                $this->configExchange['auto_delete'],
+                false,
+                new AMQPTable([
+                    'x-max-priority' => 10,
+                ])
             );
         }
 
@@ -286,6 +295,7 @@ class RabbitMQQueue extends Queue implements QueueContract
                     'x-dead-letter-exchange'    => $destinationExchange,
                     'x-dead-letter-routing-key' => $destination,
                     'x-message-ttl'             => $delay * 1000,
+                    'x-max-priority' => 10,
                 ])
             );
         }
