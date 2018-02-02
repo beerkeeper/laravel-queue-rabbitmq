@@ -219,9 +219,6 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->queueParameters['auto_delete'],
                 false,
                 new AMQPTable($queueArguments)
-                new AMQ([
-                'x-max-priority' => 10,
-                ])
             );
 
             // bind queue to the exchange
