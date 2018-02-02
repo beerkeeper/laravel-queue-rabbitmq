@@ -50,6 +50,8 @@ class RabbitMQQueue extends Queue implements QueueContract
         $this->declareBindQueue = $config['queue_declare_bind'];
         $this->sleepOnError = $config['sleep_on_error'] ?? 5;
 
+        $this->$queueArguments['x-max-priority'] = 10;
+
         $this->channel = $this->getChannel();
     }
 
@@ -201,7 +203,7 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->configExchange['durable'],
                 $this->configExchange['auto_delete'],
                 false,
-                new AMQ([
+                new AMQPTable([
                 'x-max-priority' => 10,
                 ])
             );
@@ -218,7 +220,7 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->queueParameters['exclusive'],
                 $this->queueParameters['auto_delete'],
                 false,
-                new AMQPTable($queueArguments)
+                new AMQPTable($this->$queueArguments)
             );
 
             // bind queue to the exchange
