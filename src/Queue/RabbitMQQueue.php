@@ -68,7 +68,7 @@ class RabbitMQQueue extends Queue implements QueueContract
     }
 
     /** @inheritdoc */
-    public function pushRaw($payload, $queue = null, array $options = )
+    public function pushRaw($payload, $queue = null, array $options = [])
     {
         try {
             $queue = $this->getQueueName($queue);
@@ -89,6 +89,7 @@ class RabbitMQQueue extends Queue implements QueueContract
 
             if (isset($options['properties']) && is_arrray($options['properties'])) {
             $headers = array_merge($headers, $options['properties'];
+            }
 
             // push job to a queue
             $message = new AMQPMessage($payload, $headers);
@@ -217,6 +218,7 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->queueParameters['exclusive'],
                 $this->queueParameters['auto_delete'],
                 false,
+                new AMQPTable($queueArguments)
                 new AMQ([
                 'x-max-priority' => 10,
                 ])
