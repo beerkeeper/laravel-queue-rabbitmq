@@ -50,6 +50,8 @@ class RabbitMQQueue extends Queue implements QueueContract
         $this->declareBindQueue = $config['queue_declare_bind'];
         $this->sleepOnError = $config['sleep_on_error'] ?? 5;
 
+        $this->queueArguments['x-max-priority'] = 10;
+
         $this->channel = $this->getChannel();
     }
 
@@ -62,9 +64,9 @@ class RabbitMQQueue extends Queue implements QueueContract
     }
 
     /** @inheritdoc */
-    public function push($job, $data = '', $queue = null)
+    public function push($job, $data = '', $queue = null, $options = [])
     {
-        return $this->pushRaw($this->createPayload($job, $data), $queue, []);
+        return $this->pushRaw($this->createPayload($job, $data), $queue, $options);
     }
 
     /** @inheritdoc */
@@ -85,6 +87,10 @@ class RabbitMQQueue extends Queue implements QueueContract
 
             if ($this->retryAfter !== null) {
                 $headers['application_headers'] = [self::ATTEMPT_COUNT_HEADERS_KEY => ['I', $this->retryAfter]];
+            }
+
+            if (isset($options['properties']) && is_arrray($options['properties'])) {
+            $headers = array_merge($headers, $options['properties'];
             }
 
             // push job to a queue
@@ -195,7 +201,11 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $this->configExchange['type'],
                 $this->configExchange['passive'],
                 $this->configExchange['durable'],
-                $this->configExchange['auto_delete']
+                $this->configExchange['auto_delete'],
+                false,
+                new AMQPTable([
+                'x-max-priority' => 10,
+                ])
             );
 
             $this->declaredExchanges[] = $exchange;
@@ -247,6 +257,7 @@ class RabbitMQQueue extends Queue implements QueueContract
                 'x-dead-letter-exchange' => $destinationExchange,
                 'x-dead-letter-routing-key' => $destination,
                 'x-message-ttl' => $delay * 1000,
+                'x-max-priority' => 10,
             ], (array)$this->queueArguments);
 
             $this->channel->queue_declare(
