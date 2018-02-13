@@ -89,7 +89,7 @@ class RabbitMQQueue extends Queue implements QueueContract
                 $headers['application_headers'] = [self::ATTEMPT_COUNT_HEADERS_KEY => ['I', $this->retryAfter]];
             }
 
-            if (isset($options['properties']) && is_arrray($options['properties'])) {
+            if (isset($options['properties']) && is_array($options['properties'])) {
                 $headers = array_merge($headers, $options['properties']);
             }
 
