@@ -90,7 +90,7 @@ class RabbitMQQueue extends Queue implements QueueContract
             }
 
             if (isset($options['properties']) && is_arrray($options['properties'])) {
-            $headers = array_merge($headers, $options['properties'];
+                $headers = array_merge($headers, $options['properties']);
             }
 
             // push job to a queue
